@@ -1,60 +1,67 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
-const UserDetail = () => {
-    const { userId } = useParams(); // Menggunakan userId sesuai dengan route
+const Detail = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const { id } = useParams();
+    const [users, setUsers] = useState({
+        first_name: "",
+        last_name: "",
+        email: "",
+        avatar: ""
+    });
 
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await axios.get(`https://reqres.in/api/users/${userId}`); // Mengambil data berdasarkan userId
-                const { data } = res.data;
-                setUser({
-                    first_name: data.first_name,
-                    last_name: data.last_name,
-                    email: data.email,
-                    avatar: data.avatar,
-                });
-                setLoading(false);
+                await axios.get(`https://reqres.in/api/users/${id}`)
+                    .then((res) => {
+                        const { data } = res;
+                        setUsers({
+                            first_name: data.data.first_name,
+                            last_name: data.data.last_name,
+                            email: data.data.email,
+                            avatar: data.data.avatar
+                        });
+                    });
             } catch (error) {
-                setError("Failed to fetch user data.");
-                setLoading(false);
+                alert(error);
             }
         };
         getUser();
-    }, [userId]); // Dependency sekarang adalah userId
-
-    if (loading) {
-        return <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>Loading...</div>;
-    }
-
-    if (error) {
-        return <div className="alert alert-danger" role="alert">{error}</div>;
-    }
+    }, [id]);
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center mb-4">User Details</h2>
-            {user && (
-                <div className="card" style={{ width: "18rem", margin: "0 auto" }}>
-                    <img src={user.avatar} className="card-img-top" alt={`${user.first_name} ${user.last_name}`} />
-                    <div className="card-body">
-                        <h5 className="card-title">{user.first_name} {user.last_name}</h5>
-                        <p className="card-text">Email: {user.email}</p>
+            <div className="card shadow-sm" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <div className="card-body text-center">
+                    <h2 className="card-title mb-4">User Details</h2>
+                    <img 
+                        src={users.avatar} 
+                        alt={`${users.first_name} ${users.last_name}`} 
+                        className="rounded-circle mb-4" 
+                        style={{ width: '150px', height: '150px', objectFit: 'cover' }} 
+                    />
+                    <div className="mb-3">
+                        <strong>First Name:</strong> {users.first_name}
                     </div>
+                    <div className="mb-3">
+                        <strong>Last Name:</strong> {users.last_name}
+                    </div>
+                    <div className="mb-3">
+                        <strong>Email:</strong> {users.email}
+                    </div>
+                    <button 
+                        className="btn btn-primary mt-3" 
+                        onClick={() => navigate("/users/show")}
+                    >
+                        Back to Users List
+                    </button>
                 </div>
-            )}
-            <div className="text-center mt-4">
-                <button className="btn btn-primary" onClick={() => navigate("/")}>Back to Users List</button>
             </div>
         </div>
     );
 };
 
-export default UserDetail;
+export default Detail;

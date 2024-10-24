@@ -7,9 +7,9 @@ const UserCreate = React.lazy(() => import("./users/Create"));
 
 const routes = [
   {path: "/", Component: Home},
-  {path: "/users", Component: UserList},
-  {path: "/users/show/id", Component: UserDetail},
-  {path: "/users/update/id", Component: UserUpdate},
+  {path: "/users/show", Component: UserList},
+  {path: "/users/show/:id", Component: UserDetail},
+  {path: "/users/update/:id", Component: UserUpdate},
   {path: "/users/create", Component: UserCreate},
 ];
 export default routes;

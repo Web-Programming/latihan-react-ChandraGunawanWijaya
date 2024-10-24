@@ -15,7 +15,7 @@ function App() {
             </NavLink>
           </li>
           <li className='nav-item'>
-            <NavLink to = "/users" className = "nav-link">
+            <NavLink to = "/users/show" className = "nav-link">
             User
             </NavLink>
           </li>
